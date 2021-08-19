@@ -88,6 +88,13 @@ class BoardView(viewsets.ModelViewSet):
     queryset = Board.objects.raw('SELECT * FROM Board')
     serializer_class = BoardSerializer
     
+    def retrieve(self, request, pk):
+        queryset = Article.objects.raw('SELECT * FROM Article WHERE boardID={} AND isDel=0\
+                                        ORDER BY timestamp DESC'.format(pk))
+        serializer = ArticleReturnSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
     def perform_create(self, serializer):
         serializer.save()
  
